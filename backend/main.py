@@ -225,7 +225,12 @@ async def root():
     """Health check endpoint"""
     return {"message": "Deepfake Detection API is running", "version": "1.0.0"}
 
-@app.post("/detect/image", response_model=DetectionResponse)
+@app.get("/api/")
+async def api_root():
+    """API health check endpoint"""
+    return {"message": "Deepfake Detection API is running", "version": "1.0.0"}
+
+@app.post("/api/detect/image", response_model=DetectionResponse)
 async def detect_image_deepfake(
     file: Optional[UploadFile] = File(None),
     url: Optional[str] = Form(None)
@@ -270,7 +275,7 @@ async def detect_image_deepfake(
         logger.error(f"Unexpected error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.post("/detect/video", response_model=DetectionResponse)
+@app.post("/api/detect/video", response_model=DetectionResponse)
 async def detect_video_deepfake(
     file: Optional[UploadFile] = File(None),
     url: Optional[str] = Form(None)
