@@ -12,7 +12,6 @@ import aiohttp
 from urllib.parse import urlparse
 import requests
 from PIL import Image
-import cv2
 import numpy as np
 
 # Configure logging
@@ -44,22 +43,18 @@ ALLOWED_VIDEO_TYPES = ["video/mp4", "video/avi", "video/mov", "video/quicktime"]
 
 class SimpleDeepfakeDetector:
     def __init__(self):
-        # Initialize OpenCV face detection
-        try:
-            self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        except:
-            # Fallback for environments where OpenCV data is not available
-            self.face_cascade = None
+        # Simple detector without OpenCV for serverless compatibility
+        pass
         
     def detect_faces(self, image: np.ndarray) -> list:
-        """Detect faces in an image"""
-        if self.face_cascade is None:
-            # Simple fallback - assume faces are present
-            return [(100, 100, 200, 200)]
-        
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
-        return faces
+        """Detect faces in an image - simplified version"""
+        # Simple fallback - assume faces are present
+        height, width = image.shape[:2]
+        # Return a mock face detection in the center
+        face_size = min(height, width) // 3
+        x = (width - face_size) // 2
+        y = (height - face_size) // 2
+        return [(x, y, face_size, face_size)]
     
     def analyze_image_simple(self, image: np.ndarray) -> dict:
         """Simple analysis for deepfake detection"""
@@ -67,8 +62,11 @@ class SimpleDeepfakeDetector:
             # Basic image analysis
             height, width = image.shape[:2]
             
-            # Convert to grayscale for analysis
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # Convert to grayscale for analysis (RGB to grayscale)
+            if len(image.shape) == 3:
+                gray = np.mean(image, axis=2)
+            else:
+                gray = image
             
             # Calculate basic statistics
             mean_brightness = np.mean(gray)
@@ -77,18 +75,20 @@ class SimpleDeepfakeDetector:
             # Detect faces
             faces = self.detect_faces(image)
             
-            # Simple blur detection
-            blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
+            # Simple blur detection using variance of Laplacian approximation
+            # Calculate second derivative approximation
+            laplacian_var = np.var(np.diff(np.diff(gray, axis=0), axis=1))
             
-            # Edge analysis
-            edges = cv2.Canny(gray, 50, 150)
-            edge_density = np.sum(edges) / (height * width)
+            # Edge analysis - simple gradient-based edge detection
+            grad_x = np.abs(np.diff(gray, axis=1))
+            grad_y = np.abs(np.diff(gray, axis=0))
+            edge_density = (np.sum(grad_x) + np.sum(grad_y)) / (height * width)
             
             return {
                 "face_count": len(faces),
                 "mean_brightness": mean_brightness,
                 "std_brightness": std_brightness,
-                "blur_score": blur_score,
+                "blur_score": laplacian_var,
                 "edge_density": edge_density,
                 "image_size": height * width
             }
@@ -187,7 +187,7 @@ async def download_from_url(url: str) -> bytes:
         raise HTTPException(status_code=400, detail=f"Error downloading from URL: {str(e)}")
 
 def process_image(image_data: bytes) -> np.ndarray:
-    """Process image data to OpenCV format"""
+    """Process image data to numpy array format"""
     try:
         # Convert bytes to PIL Image
         image = Image.open(io.BytesIO(image_data))
@@ -196,9 +196,9 @@ def process_image(image_data: bytes) -> np.ndarray:
         if image.mode != 'RGB':
             image = image.convert('RGB')
         
-        # Convert to numpy array and then to OpenCV format
+        # Convert to numpy array
         image_array = np.array(image)
-        return cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
+        return image_array
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
