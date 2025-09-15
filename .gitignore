@@ -126,8 +126,6 @@ dmypy.json
 /frontend/.env.test.local
 /frontend/.env.production.local
 
-# Vercel
-.vercel
 
 # Temporary files
 *.tmp

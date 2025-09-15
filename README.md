@@ -1,6 +1,6 @@
 # Deepfake Detection Web Application
 
-A modern web application that uses AI-powered computer vision to detect potential deepfake content in images and videos. Built with FastAPI (Python) backend and React frontend, designed for easy deployment on Vercel.
+A modern web application that uses AI-powered computer vision to detect potential deepfake content in images and videos. Built with FastAPI (Python) backend and React frontend.
 
 ![Deepfake Detection App](https://via.placeholder.com/800x400/2563eb/ffffff?text=Deepfake+Detection+Tool)
 
@@ -11,7 +11,6 @@ A modern web application that uses AI-powered computer vision to detect potentia
 - **Real-time Analysis**: Fast AI-powered deepfake detection
 - **Detailed Results**: Confidence scores and detailed reasoning
 - **Modern UI**: Clean, responsive interface with drag-and-drop functionality
-- **Vercel Ready**: Optimized for serverless deployment
 
 ## 🛠️ Technology Stack
 
@@ -29,7 +28,6 @@ A modern web application that uses AI-powered computer vision to detect potentia
 - **Axios**: HTTP client for API calls
 
 ### Deployment
-- **Vercel**: Serverless deployment platform
 - **Python 3.9**: Backend runtime
 - **Node.js**: Frontend build environment
 
@@ -65,25 +63,14 @@ A modern web application that uses AI-powered computer vision to detect potentia
    ```
    The frontend will be available at `http://localhost:3000`
 
-### Production Deployment on Vercel
+### Production Deployment
 
-1. **Install Vercel CLI**
-   ```bash
-   npm i -g vercel
-   ```
+For production deployment, you can use any hosting platform that supports Python and Node.js applications. Some popular options include:
 
-2. **Build and deploy**
-   ```bash
-   # From the project root
-   chmod +x build.sh
-   ./build.sh
-   vercel
-   ```
-
-3. **Follow Vercel prompts**
-   - Link to existing project or create new one
-   - Configure environment variables if needed
-   - Deploy!
+- **Docker**: Containerize the application for easy deployment
+- **Cloud Platforms**: AWS, Google Cloud, Azure
+- **VPS**: Deploy on a virtual private server
+- **Heroku**: Simple deployment with git integration
 
 ## 🔧 Configuration
 
@@ -163,9 +150,7 @@ The application uses multiple computer vision techniques to detect potential dee
 deepfake-detector/
 ├── backend/
 │   ├── main.py              # Main FastAPI application
-│   ├── vercel_main.py       # Vercel-optimized version
-│   ├── requirements.txt     # Python dependencies
-│   └── vercel.json         # Vercel configuration
+│   └── requirements.txt     # Python dependencies
 ├── frontend/
 │   ├── src/
 │   │   ├── components/      # React components
@@ -174,7 +159,6 @@ deepfake-detector/
 │   ├── public/             # Static assets
 │   └── package.json        # Node.js dependencies
 ├── build.sh               # Build script
-├── vercel.json           # Root Vercel configuration
 └── README.md             # This file
 ```
 
@@ -229,7 +213,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Documentation**: [API Docs](https://your-vercel-app.vercel.app/docs)
+- **Documentation**: [API Docs](http://localhost:8000/docs)
 - **Email**: support@yourdomain.com
 
 ## 🙏 Acknowledgments
@@ -237,7 +221,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - OpenCV community for computer vision tools
 - FastAPI team for the excellent web framework
 - React team for the frontend framework
-- Vercel for serverless deployment platform
 
 ---
 
